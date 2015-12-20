@@ -1,6 +1,6 @@
 package pitaru.sonia.examples;
 
-import pitaru.sonia.*; // automatically created when importing sonia using the processing menu.
+import pitaru.sonia.*;
 import processing.core.PApplet;
 
 // Sample Control for Processing 3.x
