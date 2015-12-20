@@ -309,7 +309,6 @@ public class BJSyn {
     return (fileName.startsWith(SLASH) || fileName.matches("^[A-Za-z]:")); // // 'driveA:\\'?
   }
 
-	@SuppressWarnings("resource")
 	private static InputStream openStream(String streamName) // from Processing
 	{
 		boolean dbug = false;

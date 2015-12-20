@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="public" author="false" classpath="lib/core.jar:lib/jsyn.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="pitaru.sonia.examples,pitaru.sonia" source="1.3" sourcepath="src" splitindex="true" use="true" version="false"/>
+    </target>
+</project>
