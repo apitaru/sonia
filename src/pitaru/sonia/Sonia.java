@@ -1,5 +1,7 @@
 package pitaru.sonia;
 
+import java.lang.reflect.Method;
+
 import processing.core.PApplet;
 
 import com.softsynth.jsyn.*;
@@ -8,7 +10,7 @@ public class Sonia {
 	
 	// Start API ----------------------------------------------------
 	
-	public static boolean SILENT, DIRECT_DATA;
+	public static boolean SILENT, DIRECT_DATA, EXITING;
 	public static int MAX_SAMPLES = 2048;
 	
 	public static void start(PApplet p) {
@@ -41,7 +43,7 @@ public class Sonia {
 
 	// End API ------------------------------------------------------
 	
-	static float valueMod = 32767.0f;
+	static float valueMod = 32767f;
 	static int inDevID, outDevID, inDevChNum, outDevChNum;
 	static PApplet host;
 	
@@ -50,11 +52,24 @@ public class Sonia {
 	private Sonia(PApplet p, int rate, int flag) {
 		
 		Sonia.host = p;
-		if (Sonia.host != null)
-			Sonia.host.registerMethod("dispose", this);
+		
+		if (p != null) { // for Processing >= 3.0
+			
+			try {
+				Method method = PApplet.class.getDeclaredMethod("registerMethod", 
+						new Class[] { String.class, Object.class });
+				method.invoke(p, new Object[] { "dispose", this });
+
+			} catch (Throwable e) {
+				
+				System.err.println("[WARN] Unable to register dispose (ignore if not using Processing 3.x)");
+				//e.printStackTrace();
+			}
+		}
+		
 		Sonia.initJsyn(rate, flag);
 	}
-
+	
 	static void initJsyn(int rate, int flag) {
 
 		try {
@@ -111,8 +126,12 @@ public class Sonia {
 	
 	public void dispose() {
 		
-		if (!SILENT)
-			System.out.println("[SONIA] Exiting...");
+		if (Sonia.EXITING) return;
+		
+		EXITING = true;
+		
+		if (!SILENT) 
+				System.out.println("[SONIA] Exiting...");
 		
 		if (LiveInput.state == 1)
 			LiveInput.stop();
@@ -125,6 +144,7 @@ public class Sonia {
 	}
 
 	public static void stop() {
+		
 		if (instance != null) instance.dispose();
 	}
 

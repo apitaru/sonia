@@ -11,7 +11,6 @@ import processing.core.PApplet;
 
 public class SampleControl extends PApplet {
 
-
 	Sample mySample;
 
 	public void settings() {

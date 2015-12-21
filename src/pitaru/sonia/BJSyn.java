@@ -146,17 +146,12 @@ public class BJSyn {
 	}
 
 	// Start the circuit, stopping all sample units.
-	public static void stopCircuit(int sampleNum, int _offset) {
+	public static void stopCircuit(int sampleNum, int theOffset) {
 		try {
-			// set delayed operation (offset) for shutting off circuites -prevent
-			// 'pop' sound.
-			int offset = Synth.getTickCount() + _offset;
-
-			// mySampler[sampleNum].samplePort.clear(offset);
-
+			// delayed operation to shut off circuits & prevent pops
+			int offset = Synth.getTickCount() + theOffset;
 			myPan[sampleNum].stop(offset);
 			myOut[sampleNum].stop(offset);
-			// myBusWriter[sampleNum].stop(offset);
 			mySampler[sampleNum].stop(offset);
 			multiplier[sampleNum].stop(offset);
 			myLinearLag[sampleNum].stop(offset);
@@ -170,37 +165,41 @@ public class BJSyn {
 	}
 
 	public static void setRate(int sampleNum, float r) {
-		mySampler[sampleNum].rate.set(r);
+		if (!Sonia.EXITING) mySampler[sampleNum].rate.set(r);
 	}
 
 	public static double getRate(int sampleNum) {
-		return mySampler[sampleNum].rate.get();
+		return Sonia.EXITING ? 0 : mySampler[sampleNum].rate.get();
 	}
 
 	public static void setVolume(int sampleNum, float a) {
-		myLinearLag[sampleNum].input.set(a);
-		myLinearLag[sampleNum].time.set(0.03);
+		if (!Sonia.EXITING) {
+			myLinearLag[sampleNum].input.set(a);
+			myLinearLag[sampleNum].time.set(0.03);
+		}
 	}
 
 	public static void setVolume(int sampleNum, double a) {
-		setVolume(sampleNum, (float) (a));
+		if (!Sonia.EXITING) setVolume(sampleNum, (float) (a));
 	}
 
 	public static double getVolume(int sampleNum) {
-		return myLinearLag[sampleNum].input.get();
+		return Sonia.EXITING ? 0 : myLinearLag[sampleNum].input.get();
 	}
 
 	public static void setPan(int sampleNum, float p) {
-		myLinearLag3[sampleNum].time.set(0.03);
-		myLinearLag3[sampleNum].input.set(p);
+		if (!Sonia.EXITING) {
+			myLinearLag3[sampleNum].time.set(0.03);
+			myLinearLag3[sampleNum].input.set(p);
+		}
 	}
 
 	public static double getPan(int sampleNum) {
-		return myLinearLag3[sampleNum].input.get();
+		return Sonia.EXITING ? 0 : myLinearLag3[sampleNum].input.get();
 	}
 
 	public static int getNumFrames(int sampleNum) {
-		return mySamp[sampleNum].getNumFrames();
+		return Sonia.EXITING ? 0 : mySamp[sampleNum].getNumFrames();
 	}
 
 	public static void buildSamp(int sampleNum, String fileName) {
@@ -215,7 +214,6 @@ public class BJSyn {
 			break;
 		default:
 			System.err.println("Sonia: Sample must be 'wav' or 'aiff' format");
-			break;
 		}
 	}
 

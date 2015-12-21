@@ -10,11 +10,12 @@ import com.softsynth.jsyn.*;
 
 public class LiveInput {
 
+	static int maxSamples = BJSyn.maxSamples;
+	
 	static ChannelIn[] chIn = new ChannelIn[Sonia.inDevChNum];
 	static SynthSample sample;
 	static SampleWriter sampleWriter;
 	static BusReader myBusReader;
-	static int maxSamples = BJSyn.maxSamples;
 	static BusWriter[] myBusWriter = new BusWriter[4 + maxSamples];
 	static PeakFollower followerL, followerR;
 	static SampleWriter[] recorder = new SampleWriter[maxSamples];
@@ -29,8 +30,7 @@ public class LiveInput {
 
 	static int state = 0;
 
-	public LiveInput() {
-	}
+	public LiveInput() {}
 
 	public static void start(int rate, int nSamples) {
 

@@ -23,7 +23,7 @@ public class Sample {
 	public int movedF_Buff;
 	public float rate;
 	public int framesWhenDone;
-	
+
 	protected int lastFrame = 0;
 
 	public static FFTutils fft = new FFTutils(1024);
@@ -303,7 +303,7 @@ public class Sample {
 		try {
 			i = (int) BJSyn.getNumFrames(id);
 		} catch (SynthException e) {
-			System.out.print(e);
+			throw new SoniaException(e);
 		}
 
 		return i;
@@ -318,6 +318,7 @@ public class Sample {
 	}
 
 	public int getCurrentFrame() {
+		
 		int i = 0;
 		try {
 			if (getFramesMoved() > 0 && getRangeFrames() > 0) {
@@ -326,29 +327,26 @@ public class Sample {
 				i = 0;
 			}
 		} catch (SynthException e) {
-			System.out.print(e);
-
+			throw new SoniaException(e);
 		}
 
 		return i;
-
 	}
 
 	public int getFramesMoved() {
-		int i = 0;
+		
+		if (Sonia.EXITING) return 0;
+		
 		try {
-			i = BJSyn.mySampler[id].samplePort.getNumFramesMoved();
+			return BJSyn.mySampler[id].samplePort.getNumFramesMoved();
 		} catch (SynthException e) {
-			System.out.print(e);
-
+			
+			throw new SoniaException(e);
 		}
-		return i;
-
 	}
 
-	// READ
 	// FLOATS
-
+	
 	public void readChannel(int part, float[] data, int firstDataFrame,
 			int firstSampleFrame, int numFrames) {
 		short[] data_s = new short[numFrames];
@@ -405,8 +403,7 @@ public class Sample {
 		readChannel(0, data_s, 0, 0, data_s.length);
 	}
 
-	// WROTE
-	// FLOAT
+	// FLOATS
 
 	public void writeChannel(int part, float[] data, int firstDataFrame,
 			int firstSampleFrame, int numFrames) {
@@ -435,7 +432,7 @@ public class Sample {
 		writeChannel(0, data, 0, 0, data.length);
 	}
 
-	// SHORT
+	// SHORTS
 
 	public void writeChannel(int part, short[] data_s, int firstDataFrame,
 			int firstSampleFrame, int numFrames) {
@@ -482,13 +479,13 @@ public class Sample {
 	static public void convertData(short[] data_s, float[] data, int numFrames,
 			int firstFrame) {
 		for (int i = 0; i < numFrames; i++) {
-			data[i + firstFrame] = (float) ((data_s[i] / Sonia.valueMod));
+			data[i + firstFrame] = ((data_s[i] / Sonia.valueMod));
 		}
 	}
 
 	static public void convertData(short[] data_s, float[] data) {
 		for (int i = 0; i < data_s.length; i++) {
-			data[i] = (float) ((data_s[i] / Sonia.valueMod));
+			data[i] = ((data_s[i] / Sonia.valueMod));
 		}
 	}
 
@@ -540,11 +537,11 @@ public class Sample {
 	}
 
 	public void saveFile(String fileName) {
+		
 		try {
+			
 			RandomAccessFile rfile = new RandomAccessFile(fileName + ".wav", "rw");
 			WAVFileWriter wavWriter = new WAVFileWriter(rfile);
-
-			// wavWriter.setLength(0); // only supported in Java 1.2 !!!
 
 			if (channels == 1) {
 				// create an array of shorts and fill it with a sawtooth wave
@@ -573,7 +570,6 @@ public class Sample {
 				wavWriter.close();
 			}
 
-			// System.out.println("Wrote testout.wav");
 		} catch (IOException e) {
 			throw new SoniaException(e);
 		}
