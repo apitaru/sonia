@@ -138,6 +138,8 @@ public class LiveInput {
 
 	public static float[] getSignal() {
 
+		if (Sonia.EXITING) return new float[0];
+		
 		sample.read(0, _signal, 0, _signal.length);
 		int framesMoved = sampleWriter.samplePort.getNumFramesMoved();
 		startframe = ((framesMoved) % (_signal.length));
@@ -150,13 +152,16 @@ public class LiveInput {
 	}
 
 	public static float[] getSpectrum() {
-
+		
+		if (Sonia.EXITING) return new float[0];
+		
 		spectrum = _FFTutils.computeFFT(getSignal());
 
 		return spectrum;
 	}
 
 	public static float[] getSpectrum(boolean flag) {
+		
 		useEqualizer(flag);
 		useEnvelope(flag);
 		return getSpectrum();
@@ -186,15 +191,15 @@ public class LiveInput {
 	}
 
 	public static float getLevel() {
-		return (float) ((followerL.output.get() + followerR.output.get()) / 2d);
+		return Sonia.EXITING ? 0 : (float) ((followerL.output.get() + followerR.output.get()) / 2d);
 	}
 
 	public static float getLevelLeft() {
-		return (float) (followerL.output.get());
+		return Sonia.EXITING ? 0 : (float) (followerL.output.get());
 	}
 
 	public static float getLevelRight() {
-		return (float) (followerR.output.get());
+		return Sonia.EXITING ? 0 : (float) (followerR.output.get());
 	}
 
 	public static float getLevel(int pan) {
@@ -203,7 +208,7 @@ public class LiveInput {
 		} else if (pan == 1) {
 			return (float) (followerR.output.get());
 		} else {
-			return 0;
+			return 0; // really?
 		}
 	}
 
