@@ -124,4 +124,8 @@ public class Sonia {
 		Synth.stopEngine();
 	}
 
+	public static void stop() {
+		if (instance != null) instance.dispose();
+	}
+
 }
