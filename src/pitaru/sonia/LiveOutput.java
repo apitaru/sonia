@@ -171,7 +171,7 @@ public class LiveOutput implements Runnable {
 
 	public static void connectLiveInput(boolean flag) {
 		
-		int id = LiveInput.maxSamples + 2;
+		int id = Sonia.MAX_SAMPLES + 2;
 		
 		if (flag) {
 			

@@ -116,14 +116,6 @@ public class Sonia {
 		valueMod = (float) (32767.0 / range);
 	}
 
-	public static void setMaxSamples(int ms) {
-		BJSyn.maxSamples = ms;
-	}
-
-	public static int getMaxSamples() {
-		return BJSyn.maxSamples;
-	}
-	
 	public void dispose() {
 		
 		if (Sonia.EXITING) return;

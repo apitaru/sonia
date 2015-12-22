@@ -18,18 +18,18 @@ import com.softsynth.jsyn.*;
 public class BJSyn {
 
 	public static PApplet parent;
-	public static int maxSamples = Sonia.MAX_SAMPLES;
-	static public SynthSample[] mySamp = new SynthSample[maxSamples];
-	public static SampleReader_16V1[] mySampler = new SampleReader_16V1[maxSamples];
-	public static LineOut[] myOut = new LineOut[maxSamples];
-	public static PanUnit[] myPan = new PanUnit[maxSamples];
+	static public SynthSample[] mySamp = new SynthSample[Sonia.MAX_SAMPLES];
+	public static SampleReader_16V1[] mySampler = new SampleReader_16V1[Sonia.MAX_SAMPLES];
+	public static LineOut[] myOut = new LineOut[Sonia.MAX_SAMPLES];
+	public static PanUnit[] myPan = new PanUnit[Sonia.MAX_SAMPLES];
 	public static InputStream stream;
-	public static final int NUM_FRAMES = 64;
-	public static LinearLag[] myLinearLag = new LinearLag[maxSamples];
-	public static LinearLag[] myLinearLag2 = new LinearLag[maxSamples];
-	public static LinearLag[] myLinearLag3 = new LinearLag[maxSamples];
+	public static LinearLag[] myLinearLag = new LinearLag[Sonia.MAX_SAMPLES];
+	public static LinearLag[] myLinearLag2 = new LinearLag[Sonia.MAX_SAMPLES];
+	public static LinearLag[] myLinearLag3 = new LinearLag[Sonia.MAX_SAMPLES];
+	public static MultiplyUnit[] multiplier = new MultiplyUnit[Sonia.MAX_SAMPLES];
+	
 	public static int count, sampleNum, channelNum;
-	public static MultiplyUnit[] multiplier = new MultiplyUnit[maxSamples];
+
 
 	public BJSyn() {
 	}
@@ -147,16 +147,24 @@ public class BJSyn {
 
 	// Start the circuit, stopping all sample units.
 	public static void stopCircuit(int sampleNum, int theOffset) {
-		try {
+		
+		try {	
 			// delayed operation to shut off circuits & prevent pops
 			int offset = Synth.getTickCount() + theOffset;
-			myPan[sampleNum].stop(offset);
-			myOut[sampleNum].stop(offset);
-			mySampler[sampleNum].stop(offset);
-			multiplier[sampleNum].stop(offset);
-			myLinearLag[sampleNum].stop(offset);
-			myLinearLag2[sampleNum].stop(offset);
-			myLinearLag3[sampleNum].stop(offset);
+			if (myPan != null && myPan[sampleNum] != null)
+				myPan[sampleNum].stop(offset);
+			if (myOut != null && myOut[sampleNum] != null)
+				myOut[sampleNum].stop(offset);
+			if (mySampler != null && mySampler[sampleNum] != null)
+				mySampler[sampleNum].stop(offset);
+			if (multiplier != null && multiplier[sampleNum] != null)
+				multiplier[sampleNum].stop(offset);
+			if (myLinearLag != null && myLinearLag[sampleNum] != null)
+				myLinearLag[sampleNum].stop(offset);
+			if (myLinearLag2 != null && myLinearLag2[sampleNum] != null)
+				myLinearLag2[sampleNum].stop(offset);
+			if (myLinearLag3 != null && myLinearLag3[sampleNum] != null)
+				myLinearLag3[sampleNum].stop(offset);
 
 		} catch (SynthException e) {
 

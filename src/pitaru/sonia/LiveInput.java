@@ -9,16 +9,14 @@ package pitaru.sonia;
 import com.softsynth.jsyn.*;
 
 public class LiveInput {
-
-	static int maxSamples = BJSyn.maxSamples;
 	
 	static ChannelIn[] chIn = new ChannelIn[Sonia.inDevChNum];
 	static SynthSample sample;
 	static SampleWriter sampleWriter;
 	static BusReader myBusReader;
-	static BusWriter[] myBusWriter = new BusWriter[4 + maxSamples];
+	static BusWriter[] myBusWriter = new BusWriter[4 + Sonia.MAX_SAMPLES];
 	static PeakFollower followerL, followerR;
-	static SampleWriter[] recorder = new SampleWriter[maxSamples];
+	static SampleWriter[] recorder = new SampleWriter[Sonia.MAX_SAMPLES];
 
 	static FFTutils _FFTutils;
 	public static float[] spectrum;
@@ -66,13 +64,13 @@ public class LiveInput {
 
 		myBusReader = new BusReader();
 
-		myBusWriter[0 + maxSamples] = new BusWriter();
-		myBusWriter[0 + maxSamples].start();
+		myBusWriter[Sonia.MAX_SAMPLES] = new BusWriter();
+		myBusWriter[Sonia.MAX_SAMPLES].start();
 
-		myBusWriter[0 + maxSamples].busOutput.connect(myBusReader.busInput);
+		myBusWriter[Sonia.MAX_SAMPLES].busOutput.connect(myBusReader.busInput);
 
 		chIn[0] = new ChannelIn(0);
-		chIn[0].output.connect(myBusWriter[maxSamples].input);
+		chIn[0].output.connect(myBusWriter[Sonia.MAX_SAMPLES].input);
 		chIn[0].start();
 
 		myBusReader.output.connect(sampleWriter.input);

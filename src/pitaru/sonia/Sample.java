@@ -43,7 +43,7 @@ public class Sample {
 		setVolume(1);
 		setRate(rate);
 		BJSyn.count += channels;
-		if (BJSyn.count == BJSyn.maxSamples)
+		if (BJSyn.count == Sonia.MAX_SAMPLES)
 			BJSyn.count = 0;
 	}
 
@@ -74,7 +74,7 @@ public class Sample {
 			BJSyn.buildEmptySamp(BJSyn.count, frameNum, _rate);
 			BJSyn.buildCircuit(BJSyn.count);
 			BJSyn.count++;
-			if (BJSyn.count == BJSyn.maxSamples)
+			if (BJSyn.count == Sonia.MAX_SAMPLES)
 				BJSyn.count = 0;
 			setVolume(1, i);
 			setRate(rate, i);
