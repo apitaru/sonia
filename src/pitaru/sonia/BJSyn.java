@@ -30,9 +30,7 @@ public class BJSyn {
 	
 	public static int count, sampleNum, channelNum;
 
-
-	public BJSyn() {
-	}
+	public BJSyn() {}
 
 	public static int getChannels(int sampleNum) {
 
@@ -41,17 +39,22 @@ public class BJSyn {
 
 	// loop the sample, providing start-end points.
 	public static void loopSample(int sampleNum, int start, int end) {
+		
 		try {
+			
 			startCircuit(sampleNum);
 			int offset = Synth.getTickCount() + 1; // used to delay operations below -
 																							// prevents 'pop' sound
+			
 			mySampler[sampleNum].samplePort.clear(offset); // reset the sample
 																											// play-head.
+			
 			// in the next 'frame' (offset), start a slope from 0 to 1, over .001 sec.
 			// we use these slopes all over the code to prevent 'pop' sounds - and
 			// provide a clean transition.
 			myLinearLag2[sampleNum].time.set(offset, 0.001);
 			myLinearLag2[sampleNum].input.set(offset, 1.0);
+		
 			// in the next 'frame' (offset), start looping the sample between
 			// start-end points.
 			mySampler[sampleNum].samplePort.queueLoop(offset, mySamp[sampleNum],
@@ -65,17 +68,21 @@ public class BJSyn {
 
 	// loop sample, using entire sample-data.
 	public static void loopSample(int sampleNum) {
+		
 		loopSample(sampleNum, 0, mySamp[sampleNum].getNumFrames());
 	}
 
 	// Play sample, using entire sample-data.
 	public static void playSample(int sampleNum) {
+		
 		playSample(sampleNum, 0, mySamp[sampleNum].getNumFrames());
 	}
 
 	// Play sample once. See loopSample() for details.
 	public static void playSample(int sampleNum, int start, int end) {
+		
 		try {
+			
 			startCircuit(sampleNum);
 			int offset = Synth.getTickCount() + 1;
 			mySampler[sampleNum].samplePort.clear(offset);
@@ -92,6 +99,7 @@ public class BJSyn {
 
 	// Loop sample a number of times. See loopSample() for details.
 	public static void loopSampleNum(int num, int sampleNum, int start, int end) {
+		
 		try {
 			startCircuit(sampleNum);
 			int offset = Synth.getTickCount() + 1;
@@ -111,6 +119,7 @@ public class BJSyn {
 
 	// Stop sample
 	public static void stopSample(int sampleNum, boolean stopFlag, int stopOffset) {
+		
 		try {
 			// shut off the circuit, free -cpu.
 			if (stopFlag)
@@ -173,14 +182,17 @@ public class BJSyn {
 	}
 
 	public static void setRate(int sampleNum, float r) {
+		
 		if (!Sonia.EXITING) mySampler[sampleNum].rate.set(r);
 	}
 
 	public static double getRate(int sampleNum) {
+		
 		return Sonia.EXITING ? 0 : mySampler[sampleNum].rate.get();
 	}
 
 	public static void setVolume(int sampleNum, float a) {
+		
 		if (!Sonia.EXITING) {
 			myLinearLag[sampleNum].input.set(a);
 			myLinearLag[sampleNum].time.set(0.03);
@@ -188,6 +200,7 @@ public class BJSyn {
 	}
 
 	public static void setVolume(int sampleNum, double a) {
+		
 		if (!Sonia.EXITING) setVolume(sampleNum, (float) (a));
 	}
 
@@ -244,13 +257,15 @@ public class BJSyn {
 			} catch (NullPointerException e) {
 
 				System.err
-						.println("Sonia: make sure you have entered the correct Sample filename!");
+						.println("[Sonia] make sure you have entered the correct Sample filename!");
 				return;
 			} catch (Throwable e) {
 
 				throw new SoniaException(e);
 			}
+			
 		} else {
+			
 			stream = openStream(filename);
 		}
 
@@ -267,7 +282,16 @@ public class BJSyn {
 				throw new SoniaException(e);
 			}
 		}
-
+		
+		if (stream != null) {
+			try {
+				stream.close();
+			} catch (IOException e) {
+				System.err.println("[WARN] error closing "+filename);
+			}
+			stream = null;
+		}
+		
 		if (mySamp[sampleNum].getChannelsPerFrame() == 1) {
 			// Now that the sample is ready, create a circuit for it.
 			buildCircuit(sampleNum);
@@ -307,6 +331,7 @@ public class BJSyn {
 			setPan(sampleNum + 1, 1f);
 
 		}
+
 	}
 
 	private static String SLASH = System.getProperty("file.separator");
@@ -324,8 +349,10 @@ public class BJSyn {
 			URL url = new URL(streamName);
 			return url.openStream();
 		} catch (MalformedURLException mfue) {
+			
 			// not a url, that's fine
 		} catch (FileNotFoundException fnfe) {
+			
 			// Java 1.5 likes to throw this when URL not available.
 			// http://dev.processing.org/bugs/show_bug.cgi?id=403
 		} catch (Throwable e) {
@@ -411,7 +438,7 @@ public class BJSyn {
 
 	// Build a circuit for the sample (this is not a real jSyn circuit, but just
 	// my terminology).
-	// See jSyn tutorial for understandign Unit-Generator techniques used here.
+	// See jSyn tutorial for understanding Unit-Generator techniques used here
 	public static void buildCircuit(int sampleNum) {
 
 		mySampler[sampleNum] = new SampleReader_16V1();
@@ -439,22 +466,36 @@ public class BJSyn {
 
 	// delete a circuit.
 	public static void deleteCircuit(int sampleNum) {
-		mySampler[sampleNum].delete();
+		if (mySampler[sampleNum] != null)
+			mySampler[sampleNum].delete();
 		mySampler[sampleNum] = null;
-		myOut[sampleNum].delete();
+
+		if (myOut[sampleNum] != null)
+			myOut[sampleNum].delete();
 		myOut[sampleNum] = null;
 
-		myPan[sampleNum].delete();
+		if (myPan[sampleNum] != null)
+			myPan[sampleNum].delete();
 		myPan[sampleNum] = null;
-		mySamp[sampleNum].delete();
+
+		if (mySamp[sampleNum] != null)
+			mySamp[sampleNum].delete();
 		mySamp[sampleNum] = null;
-		multiplier[sampleNum].delete();
+
+		if (multiplier[sampleNum] != null)
+			multiplier[sampleNum].delete();
 		multiplier[sampleNum] = null;
-		myLinearLag[sampleNum].delete();
+
+		if (myLinearLag[sampleNum] != null)
+			myLinearLag[sampleNum].delete();
 		myLinearLag[sampleNum] = null;
-		myLinearLag2[sampleNum].delete();
+
+		if (myLinearLag2[sampleNum] != null)
+			myLinearLag2[sampleNum].delete();
 		myLinearLag2[sampleNum] = null;
-		myLinearLag3[sampleNum].delete();
+
+		if (myLinearLag3[sampleNum] != null)
+			myLinearLag3[sampleNum].delete();
 		myLinearLag3[sampleNum] = null;
 
 	}
@@ -468,6 +509,7 @@ public class BJSyn {
 
 	// Stop all circuits
 	public static void stopEngine() {
+		
 		// System.out.println("count: " + count);
 		for (int sampleNum = 0; sampleNum < count; sampleNum++) {
 			stopCircuit(sampleNum, 0);
@@ -482,6 +524,7 @@ public class BJSyn {
 
 			// Delete unit peers.
 			stopEngine();
+			
 			count = 0; // ie java and mac don't do this on restart...
 
 			// Turn off tracing.

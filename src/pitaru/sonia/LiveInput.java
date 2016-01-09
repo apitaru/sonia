@@ -10,22 +10,20 @@ import com.softsynth.jsyn.*;
 
 public class LiveInput {
 	
+	public static float[] spectrum, signal;
+	public static boolean micFlag = true;
+
+	static FFTutils _FFTutils;
 	static ChannelIn[] chIn = new ChannelIn[Sonia.inDevChNum];
 	static SynthSample sample;
 	static SampleWriter sampleWriter;
 	static BusReader myBusReader;
-	static BusWriter[] myBusWriter = new BusWriter[4 + Sonia.MAX_SAMPLES];
 	static PeakFollower followerL, followerR;
+	static BusWriter[] myBusWriter = new BusWriter[4 + Sonia.MAX_SAMPLES];
 	static SampleWriter[] recorder = new SampleWriter[Sonia.MAX_SAMPLES];
-
-	static FFTutils _FFTutils;
-	public static float[] spectrum;
+	
 	static short[] _signal;
-	public static float[] signal;
-
 	static boolean doOnce;
-	public static boolean micFlag = true;
-
 	static int state = 0;
 
 	public LiveInput() {}
@@ -234,7 +232,6 @@ public class LiveInput {
 			recorder[id + i].samplePort.queue(BJSyn.mySamp[id + i], start, end
 					- start);
 		}
-
 	}
 
 	public static void startRecLoop(Sample s) {
