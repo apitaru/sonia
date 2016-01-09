@@ -19,6 +19,7 @@ public class LiveInput {
 	static SampleWriter sampleWriter;
 	static BusReader myBusReader;
 	static PeakFollower followerL, followerR;
+	
 	static BusWriter[] myBusWriter = new BusWriter[4 + Sonia.MAX_SAMPLES];
 	static SampleWriter[] recorder = new SampleWriter[Sonia.MAX_SAMPLES];
 	
