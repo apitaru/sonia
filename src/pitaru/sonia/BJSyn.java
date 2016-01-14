@@ -27,10 +27,11 @@ public class BJSyn {
 	public static LinearLag[] myLinearLag2 = new LinearLag[Sonia.MAX_SAMPLES];
 	public static LinearLag[] myLinearLag3 = new LinearLag[Sonia.MAX_SAMPLES];
 	public static MultiplyUnit[] multiplier = new MultiplyUnit[Sonia.MAX_SAMPLES];
-	
+
 	public static int count, sampleNum, channelNum;
 
-	public BJSyn() {}
+	public BJSyn() {
+	}
 
 	public static int getChannels(int sampleNum) {
 
@@ -39,22 +40,22 @@ public class BJSyn {
 
 	// loop the sample, providing start-end points.
 	public static void loopSample(int sampleNum, int start, int end) {
-		
+
 		try {
-			
+
 			startCircuit(sampleNum);
 			int offset = Synth.getTickCount() + 1; // used to delay operations below -
 																							// prevents 'pop' sound
-			
+
 			mySampler[sampleNum].samplePort.clear(offset); // reset the sample
 																											// play-head.
-			
+
 			// in the next 'frame' (offset), start a slope from 0 to 1, over .001 sec.
 			// we use these slopes all over the code to prevent 'pop' sounds - and
 			// provide a clean transition.
 			myLinearLag2[sampleNum].time.set(offset, 0.001);
 			myLinearLag2[sampleNum].input.set(offset, 1.0);
-		
+
 			// in the next 'frame' (offset), start looping the sample between
 			// start-end points.
 			mySampler[sampleNum].samplePort.queueLoop(offset, mySamp[sampleNum],
@@ -68,21 +69,21 @@ public class BJSyn {
 
 	// loop sample, using entire sample-data.
 	public static void loopSample(int sampleNum) {
-		
+
 		loopSample(sampleNum, 0, mySamp[sampleNum].getNumFrames());
 	}
 
 	// Play sample, using entire sample-data.
 	public static void playSample(int sampleNum) {
-		
+
 		playSample(sampleNum, 0, mySamp[sampleNum].getNumFrames());
 	}
 
 	// Play sample once. See loopSample() for details.
 	public static void playSample(int sampleNum, int start, int end) {
-		
+
 		try {
-			
+
 			startCircuit(sampleNum);
 			int offset = Synth.getTickCount() + 1;
 			mySampler[sampleNum].samplePort.clear(offset);
@@ -99,7 +100,7 @@ public class BJSyn {
 
 	// Loop sample a number of times. See loopSample() for details.
 	public static void loopSampleNum(int num, int sampleNum, int start, int end) {
-		
+
 		try {
 			startCircuit(sampleNum);
 			int offset = Synth.getTickCount() + 1;
@@ -119,7 +120,7 @@ public class BJSyn {
 
 	// Stop sample
 	public static void stopSample(int sampleNum, boolean stopFlag, int stopOffset) {
-		
+
 		try {
 			// shut off the circuit, free -cpu.
 			if (stopFlag)
@@ -156,8 +157,8 @@ public class BJSyn {
 
 	// Start the circuit, stopping all sample units.
 	public static void stopCircuit(int sampleNum, int theOffset) {
-		
-		try {	
+
+		try {
 			// delayed operation to shut off circuits & prevent pops
 			int offset = Synth.getTickCount() + theOffset;
 			if (myPan != null && myPan[sampleNum] != null)
@@ -182,17 +183,18 @@ public class BJSyn {
 	}
 
 	public static void setRate(int sampleNum, float r) {
-		
-		if (!Sonia.EXITING) mySampler[sampleNum].rate.set(r);
+
+		if (!Sonia.EXITING)
+			mySampler[sampleNum].rate.set(r);
 	}
 
 	public static double getRate(int sampleNum) {
-		
+
 		return Sonia.EXITING ? 0 : mySampler[sampleNum].rate.get();
 	}
 
 	public static void setVolume(int sampleNum, float a) {
-		
+
 		if (!Sonia.EXITING) {
 			myLinearLag[sampleNum].input.set(a);
 			myLinearLag[sampleNum].time.set(0.03);
@@ -200,8 +202,9 @@ public class BJSyn {
 	}
 
 	public static void setVolume(int sampleNum, double a) {
-		
-		if (!Sonia.EXITING) setVolume(sampleNum, (float) (a));
+
+		if (!Sonia.EXITING)
+			setVolume(sampleNum, (float) (a));
 	}
 
 	public static double getVolume(int sampleNum) {
@@ -263,9 +266,9 @@ public class BJSyn {
 
 				throw new SoniaException(e);
 			}
-			
+
 		} else {
-			
+
 			stream = openStream(filename);
 		}
 
@@ -282,16 +285,16 @@ public class BJSyn {
 				throw new SoniaException(e);
 			}
 		}
-		
+
 		if (stream != null) {
 			try {
 				stream.close();
 			} catch (IOException e) {
-				System.err.println("[WARN] error closing "+filename);
+				System.err.println("[WARN] error closing " + filename);
 			}
 			stream = null;
 		}
-		
+
 		if (mySamp[sampleNum].getChannelsPerFrame() == 1) {
 			// Now that the sample is ready, create a circuit for it.
 			buildCircuit(sampleNum);
@@ -335,10 +338,11 @@ public class BJSyn {
 	}
 
 	private static String SLASH = System.getProperty("file.separator");
-			
-  private static boolean isAbsolutePath(String fileName) {
-    return (fileName.startsWith(SLASH) || fileName.matches("^[A-Za-z]:")); // // 'driveA:\\'?
-  }
+
+	private static boolean isAbsolutePath(String fileName) {
+		return (fileName.startsWith(SLASH) || fileName.matches("^[A-Za-z]:")); // //
+																																						// 'driveA:\\'?
+	}
 
 	private static InputStream openStream(String streamName) // from Processing
 	{
@@ -349,19 +353,19 @@ public class BJSyn {
 			URL url = new URL(streamName);
 			return url.openStream();
 		} catch (MalformedURLException mfue) {
-			
+
 			// not a url, that's fine
 		} catch (FileNotFoundException fnfe) {
-			
+
 			// Java 1.5 likes to throw this when URL not available.
 			// http://dev.processing.org/bugs/show_bug.cgi?id=403
 		} catch (Throwable e) {
-			
+
 			throw new SoniaException(e);
 		}
 
 		InputStream is = null;
-    String[] guesses = { "src/data", "data", "" };
+		String[] guesses = { "src/data", "data", "" };
 		for (int i = 0; i < guesses.length; i++) {
 			String guess = streamName;
 			if (guesses[i].length() > 0) {
@@ -509,7 +513,7 @@ public class BJSyn {
 
 	// Stop all circuits
 	public static void stopEngine() {
-		
+
 		// System.out.println("count: " + count);
 		for (int sampleNum = 0; sampleNum < count; sampleNum++) {
 			stopCircuit(sampleNum, 0);
@@ -524,7 +528,7 @@ public class BJSyn {
 
 			// Delete unit peers.
 			stopEngine();
-			
+
 			count = 0; // ie java and mac don't do this on restart...
 
 			// Turn off tracing.

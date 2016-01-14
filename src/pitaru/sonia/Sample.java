@@ -148,11 +148,8 @@ public class Sample {
 	}
 
 	public float getVolume(int part) {
-		if (part < channels && part >= 0) {
-			return (float) BJSyn.getVolume(id + part);
-		} else {
-			return 0;
-		}
+		return (part < channels && part >= 0) ? (float) (BJSyn.getVolume(id + part)) : 0;
+
 	}
 
 	public int getRate() {
@@ -160,11 +157,7 @@ public class Sample {
 	}
 
 	public float getRate(int part) {
-		if (part < channels && part >= 0) {
-			return (float) BJSyn.getRate(id + part);
-		} else {
-			return 0;
-		}
+		return (part < channels && part >= 0) ? (float) (BJSyn.getRate(id + part)) : 0;
 	}
 
 	public void setRate(float v) {
@@ -184,22 +177,18 @@ public class Sample {
 	}
 
 	public float getSpeed(int part) {
-		if (part < channels && part >= 0) {
-			return (float) (BJSyn.getRate(id + part) / rate);
-		} else {
-			return 0;
-		}
+		return this.getRate(part)/rate;
 	}
 
 	public void setSpeed(float v) {
-		BJSyn.setRate(id, (float) (v * rate));
+		BJSyn.setRate(id, v * rate);
 		if (channels == 2)
-			BJSyn.setRate(id + 1, (float) (v * rate));
+			BJSyn.setRate(id + 1, v * rate);
 	}
 
 	public void setSpeed(float v, int part) {
 		if (part < channels && part >= 0) {
-			BJSyn.setRate(id + part, (float) (v * rate));
+			BJSyn.setRate(id + part, v * rate);
 
 		}
 	}
@@ -220,11 +209,7 @@ public class Sample {
 	}
 
 	public float getPan(int part) {
-		if (part < channels && part >= 0) {
-			return (float) BJSyn.getPan(id + part);
-		} else {
-			return 0;
-		}
+		return (part < channels && part >= 0) ? (float) (BJSyn.getPan(id + part)) : 0;
 	}
 
 	public void repeat() {
@@ -301,7 +286,7 @@ public class Sample {
 	public int getNumFrames() {
 		int i = 0;
 		try {
-			i = (int) BJSyn.getNumFrames(id);
+			i = BJSyn.getNumFrames(id);
 		} catch (SynthException e) {
 			throw new SoniaException(e);
 		}
