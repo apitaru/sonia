@@ -1,4 +1,4 @@
-package pitaru.sonia.examples;
+package examples;
 
 import pitaru.sonia.LiveInput;
 import pitaru.sonia.Sonia;

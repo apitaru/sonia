@@ -1,4 +1,4 @@
-package pitaru.sonia.examples;
+package examples;
 
 import pitaru.sonia.*;
 import processing.core.PApplet;
