@@ -235,35 +235,35 @@ public class LiveInput {
 		}
 	}
 
-	public static void startRecLoop(Sample s) {
-		int id = s.getID();
-		for (int i = 0; i < s.getNumChannels(); i++) {
-			prepareRecorder(s, id + i);
-			recorder[id + i].start();
-			recorder[id + i].samplePort.queueLoop(BJSyn.mySamp[id + i]);
-		}
-	}
-
-	public static void startRecLoop(Sample s, int start) {
-		int id = s.getID();
-		for (int i = 0; i < s.getNumChannels(); i++) {
-			prepareRecorder(s, id + i);
-			recorder[id + i].start();
-			recorder[id + i].samplePort.queue(BJSyn.mySamp[id + i], start,
-					BJSyn.mySamp[id + i].getNumFrames() - start);
-			recorder[id + i].samplePort.queueLoop(BJSyn.mySamp[id + i]);
-		}
-	}
-
-	public static void startRecLoop(Sample s, int start, int end) {
-		int id = s.getID();
-		for (int i = 0; i < s.getNumChannels(); i++) {
-			prepareRecorder(s, id + i);
-			recorder[id + i].start();
-			recorder[id + i].samplePort.queueLoop(BJSyn.mySamp[id + i], start, end
-					- start);
-		}
-	}
+//	public static void startRecLoop(Sample s) {
+//		int id = s.getID();
+//		for (int i = 0; i < s.getNumChannels(); i++) {
+//			prepareRecorder(s, id + i);
+//			recorder[id + i].start();
+//			recorder[id + i].samplePort.queueLoop(BJSyn.mySamp[id + i]);
+//		}
+//	}
+//
+//	public static void startRecLoop(Sample s, int start) {
+//		int id = s.getID();
+//		for (int i = 0; i < s.getNumChannels(); i++) {
+//			prepareRecorder(s, id + i);
+//			recorder[id + i].start();
+//			recorder[id + i].samplePort.queue(BJSyn.mySamp[id + i], start,
+//					BJSyn.mySamp[id + i].getNumFrames() - start);
+//			recorder[id + i].samplePort.queueLoop(BJSyn.mySamp[id + i]);
+//		}
+//	}
+//
+//	public static void startRecLoop(Sample s, int start, int end) {
+//		int id = s.getID();
+//		for (int i = 0; i < s.getNumChannels(); i++) {
+//			prepareRecorder(s, id + i);
+//			recorder[id + i].start();
+//			recorder[id + i].samplePort.queueLoop(BJSyn.mySamp[id + i], start, end
+//					- start);
+//		}
+//	}
 
 	public static void stopRec(Sample s) {
 		int id = s.getID();
